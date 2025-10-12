@@ -4,7 +4,6 @@ import random
 import pyperclip
 
 
-
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def password_generator():
     letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -32,8 +31,6 @@ def add_entry():
     else:
         is_ok=messagebox.askokcancel(message=f"These are the details entered: \nEmail:{email}"f"\npassword: {password_entry} \nIs it ok to save?")
         if is_ok:
-            with open("data.txt","a") as f:
-                f.write(f"Website:{website_entry.get()} | Username:{email.get()} | Password:{password_entry.get()}\n")
                 website_entry.delete(0,END)
                 password_entry.delete(0,END)
 
