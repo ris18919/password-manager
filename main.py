@@ -1,3 +1,4 @@
+import json
 from tkinter import *
 from tkinter import messagebox
 import random
@@ -26,19 +27,55 @@ def add_entry():
     website_get=website_entry.get()
     password_get=password_entry.get()
     email_get=email.get()
+    new_data={
+        website_get:{
+            "email":email_get,
+            "password":password_get,
+        }
+    }
+
     if len(website_get)==0 or len(password_get)==0 or len(email_get)==0:
         messagebox.showinfo(title="Oops",message="do not leave any field empty")
     else:
         is_ok=messagebox.askokcancel(message=f"These are the details entered: \nEmail:{email}"f"\npassword: {password_entry} \nIs it ok to save?")
         if is_ok:
+            try:
+                with open("data.json","r") as f:
+                    # f.write(f"Website:{website_entry.get()} | Username:{email.get()} | Password:{password_entry.get()}\n")
+                    #reading old data
+                    data=json.load(f)
+            except FileNotFoundError:
+                with open("data.json","w") as f:
+                    json.dump(new_data,f,indent=4)
+            else:
+                #updating old data with new data
+                data.update(new_data)
+                with open("data.json","w") as f:
+                    json.dump(data,f,indent=4)
+            finally:
                 website_entry.delete(0,END)
                 password_entry.delete(0,END)
+
+def find_passwords():
+    website_get = website_entry.get()
+    try:
+        with open("data.json","r") as f:
+            data=json.load(f)
+            if website_get in data:
+                email_=data[website_get]["email"]
+                password_=data[website_get]["password"]
+                messagebox.showinfo(title="Info",message=f"Email:{email_}\nPassword:{password_}")
+            else:
+                messagebox.showinfo(title="error",message=f"No details for {website_get} exists.")
+    except FileNotFoundError:
+        messagebox.showinfo(title="Info",message="No Data File Found")
 
 
 # ---------------------------- UI SETUP ------------------------------- #
 
 window=Tk()
 window.title("Password Manager")
+window.resizable(False,False)
 window.config(padx=20,pady=20)
 canvas=Canvas(width=200,height=200,highlightthickness=0)
 lock_image=PhotoImage(file="logo.png")
@@ -68,5 +105,7 @@ generate_password=Button(text="Generate Password",command=password_generator)
 generate_password.grid(row=3,column=2)
 add=Button(text="Add",width=45,command=add_entry)
 add.grid(row=4,column=1,columnspan=2)
+search=Button(text="Search",width=14,command=find_passwords)
+search.grid(column=2,row=1)
 
 window.mainloop()
